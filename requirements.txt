@@ -1,0 +1,6 @@
+flask
+numpy
+scikit-learn
+scipy
+pandas
+optuna
