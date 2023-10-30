@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from models.user import User
 from db import Repository
 
@@ -13,10 +15,10 @@ def get_user(user_id: str) -> User:
 
 
 def create_user(user: User) -> User:
+    user.id = uuid4()
     user_repo.insert(user)
     return user
 
 
 def delete_user(user_id: str) -> bool:
-    user_repo.delete(id=user_id)
-    return True
+    return 1 == user_repo.delete(id=user_id)
