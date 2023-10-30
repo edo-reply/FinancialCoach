@@ -1,11 +1,22 @@
-def get_user(user_id):
-    print("get user: ", user_id)
-    return {"name":"Mario", "surname": "Rossi"}
+from models.user import User
+from db import Repository
 
-def create_user(data):
-    print("create user: ", data)
-    return {"name":"Mario", "surname": "Rossi"}
+user_repo = Repository(User)
 
-def delete_user(user_id):
-    print("delete user: ", user_id)
+
+def get_user(user_id: str) -> User:
+    result = user_repo.select(id=user_id)
+    if result:
+        return result[0]
+    else:
+        return None
+
+
+def create_user(user: User) -> User:
+    user_repo.insert(user)
+    return user
+
+
+def delete_user(user_id: str) -> bool:
+    user_repo.delete(id=user_id)
     return True

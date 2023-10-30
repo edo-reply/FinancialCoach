@@ -5,8 +5,9 @@ from services import user_service
 from models.user import User
 
 
-@app.get('/api/users/<int:user_id>')
+@app.get('/api/users/<string:user_id>')
 def get_user(user_id: int):
+    print("req:", user_id)
     user = user_service.get_user(user_id)
     if user is not None:
         return jsonify(user)
@@ -30,7 +31,7 @@ def create_user():
     return jsonify(user), 201
 
 
-@app.delete('/api/users/<int:user_id>')
+@app.delete('/api/users/<string:user_id>')
 def delete_user(user_id: int):
     if user_service.delete_user(user_id):
         return None, 204
