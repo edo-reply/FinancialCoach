@@ -1,3 +1,4 @@
+from uuid import uuid4
 from flask import jsonify, request
 
 from app import app
@@ -17,14 +18,14 @@ def get_user(user_id: str):
 @app.post("/api/users")
 def create_user():
     body = request.get_json(silent=True)
-    if body:
-        try:
-            user = User(**body)
-        except TypeError as err:
-            print(type(err))
-            return jsonify({"error": "Invalid request"}), 400
-    else:
+    if not body:
         return jsonify({"error": "Unsupported media type"}), 415
+
+    try:
+        user = User(**body, id=uuid4())
+    except TypeError as err:
+        print(err)
+        return jsonify({"error": "Invalid request"}), 400
 
     user = user_service.create_user(user)
     return jsonify(user), 201
