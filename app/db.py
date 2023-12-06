@@ -8,18 +8,20 @@ class Repository:
     _connection = None
 
     def __init__(self, model_type: type):
-        if Repository._connection is None:
-            Repository._connection = connect(
-                config.db_path, check_same_thread=False)
-            with open(config.schema_path, "r") as schema_file:
-                Repository._connection.executescript(schema_file.read())
-
         if not is_dataclass(model_type):
             raise ValueError(
                 f"'{model_type.__name__}' is not a dataclass!")
         self.model_type: type = model_type
         self.table_name: str = model_type.__name__.lower()
         self.fields: list = [f.name for f in fields(model_type)]
+
+    @classmethod
+    def init_db(cls):
+        if cls._connection is None:
+            cls._connection = connect(
+                config.db_path, check_same_thread=False)
+            with open(config.schema_path, "r") as schema_file:
+                cls._connection.executescript(schema_file.read())
 
     def select(self, **kwargs: str) -> list:
         query = f"SELECT {",".join(self.fields)} FROM {self.table_name} "\

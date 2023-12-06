@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from db import Repository
 
 
 app = Flask(__name__)
@@ -11,4 +12,5 @@ def internal_server_error(e):
 
 if __name__ == '__main__':
     from controllers.user_controller import *
+    Repository.init_db()
     app.run()
