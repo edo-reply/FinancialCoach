@@ -1,3 +1,5 @@
+from sqlite3 import IntegrityError
+
 from models.transaction import UserTransaction
 from db import Repository
 
@@ -13,5 +15,9 @@ def get_transactions(user_id: str) -> UserTransaction:
 
 
 def create_transactions(transaction: UserTransaction) -> UserTransaction:
-    transaction_repo.insert(transaction)
+    try:
+        transaction_repo.insert(transaction)
+    except IntegrityError as err:
+        print(err)
+        return None
     return transaction

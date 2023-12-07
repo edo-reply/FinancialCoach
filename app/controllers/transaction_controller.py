@@ -28,4 +28,8 @@ def create_transaction(user_id: str):
         return jsonify({"error": "Invalid request"}), 400
 
     transaction = transaction_service.create_transactions(transaction)
-    return jsonify(transaction), 201
+
+    if transaction is not None:
+        return jsonify(transaction), 201
+    else:
+        return jsonify({"error": "User not found"}), 404
