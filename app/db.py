@@ -2,8 +2,6 @@ from dataclasses import fields, is_dataclass
 from sqlite3 import connect
 import re
 
-import config
-
 
 class Repository:
     _connection = None
@@ -17,11 +15,11 @@ class Repository:
         self.fields: list = [f.name for f in fields(model_type)]
 
     @classmethod
-    def init_db(cls):
+    def init_db(cls, db_path: str, schema_path: str):
         if cls._connection is None:
-            cls._connection = connect(config.db_path, check_same_thread=False)
+            cls._connection = connect(db_path, check_same_thread=False)
             cls._connection.execute("PRAGMA foreign_keys = ON")
-            with open(config.schema_path, "r") as schema_file:
+            with open(schema_path, "r") as schema_file:
                 cls._connection.executescript(schema_file.read())
             cls._connection.commit()
 

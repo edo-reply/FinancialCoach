@@ -1,6 +1,7 @@
+from pathlib import Path
 from flask import Flask, jsonify
-from db import Repository
 
+from db import Repository
 
 app = Flask(__name__)
 
@@ -11,7 +12,8 @@ def internal_server_error(e):
 
 
 if __name__ == '__main__':
-    Repository.init_db()
+    Repository.init_db(db_path=':memory:',
+                       schema_path=Path(__file__).parent.joinpath("schema.sql").resolve())
 
     from controllers.user_controller import *
     from controllers.transaction_controller import *
