@@ -11,7 +11,10 @@ def internal_server_error(e):
 
 
 if __name__ == '__main__':
+    Repository.init_db()
+
     from controllers.user_controller import *
     from controllers.transaction_controller import *
-    Repository.init_db()
+    from controllers.advice_controller import *
+
     app.run()
