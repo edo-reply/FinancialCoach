@@ -7,7 +7,7 @@ from core import smartagent
 transaction_repo = Repository(UserTransaction)
 
 
-def get_transactions(user_id: str) -> UserTransaction:
+def get_transactions(user_id: str) -> list[UserTransaction] | None:
     result = transaction_repo.select(user_id=user_id)
     if result:
         return result
@@ -15,7 +15,7 @@ def get_transactions(user_id: str) -> UserTransaction:
         return None
 
 
-def create_transactions(transaction: UserTransaction) -> UserTransaction:
+def create_transactions(transaction: UserTransaction) -> UserTransaction | None:
     try:
         transaction.rating = smartagent.rate_transaction(transaction)
         transaction_repo.insert(transaction)

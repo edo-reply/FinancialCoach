@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 from flask import jsonify, request
 
 from app import app
@@ -22,7 +22,7 @@ def create_transaction(user_id: str):
         return jsonify({"error": "Unsupported media type"}), 415
 
     try:
-        transaction = UserTransaction(**body, id=uuid4(), user_id=user_id)
+        transaction = UserTransaction(**body, id=uuid4(), user_id=UUID(user_id))
     except TypeError as err:
         print(err)
         return jsonify({"error": "Invalid request"}), 400

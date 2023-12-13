@@ -4,7 +4,7 @@ from db import Repository
 user_repo = Repository(User)
 
 
-def get_user(user_id: str) -> User:
+def get_user(user_id: str) -> User | None:
     result = user_repo.select(id=user_id)
     if result:
         return result[0]

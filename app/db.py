@@ -1,10 +1,11 @@
 from dataclasses import fields, is_dataclass
-from sqlite3 import connect
+from sqlite3 import Connection, Cursor, connect
+from pathlib import Path
 import re
 
 
 class Repository:
-    _connection = None
+    _connection : Connection | None = None
 
     def __init__(self, model_type: type):
         if not is_dataclass(model_type):
@@ -15,7 +16,7 @@ class Repository:
         self.fields: list = [f.name for f in fields(model_type)]
 
     @classmethod
-    def init_db(cls, db_path: str, schema_path: str):
+    def init_db(cls, db_path: str, schema_path: str | Path):
         if cls._connection is None:
             cls._connection = connect(db_path, check_same_thread=False)
             cls._connection.execute("PRAGMA foreign_keys = ON")
@@ -23,10 +24,20 @@ class Repository:
                 cls._connection.executescript(schema_file.read())
             cls._connection.commit()
 
+    def commit(self):
+        if Repository._connection is None:
+            raise RuntimeError("connection not created")
+        Repository._connection.commit()
+    
+    def execute(self, query: str, params: list) -> Cursor:
+        if Repository._connection is None:
+            raise RuntimeError("connection not created")
+        return Repository._connection.execute(query, params)
+
     def select(self, **kwargs: str) -> list:
         query = f"SELECT {",".join(self.fields)} FROM {self.table_name} "\
             f"WHERE {",".join([f"{col} = ?" for col in kwargs.keys()])}"
-        cursor = Repository._connection.execute(query, list(kwargs.values()))
+        cursor = self.execute(query, list(kwargs.values()))
         result = [self.model_type(**dict(zip(self.fields, result)))
                   for result in cursor.fetchall()]
         return result
@@ -37,13 +48,13 @@ class Repository:
         query = f"INSERT INTO {self.table_name} ({",".join(self.fields)}) "\
             f"VALUES ({",".join(["?"]*len(self.fields))})"
         values = [str(obj.__dict__[k]) for k in self.fields]
-        cursor = Repository._connection.execute(query, values)
-        Repository._connection.commit()
+        cursor = self.execute(query, values)
+        self.commit()
         return cursor.rowcount == 1
 
     def delete(self, **kwargs: str) -> int:
         query = f"DELETE FROM {self.table_name} "\
             f"WHERE {",".join([f"{col} = ?" for col in kwargs.keys()])}"
-        cursor = Repository._connection.execute(query, list(kwargs.values()))
-        Repository._connection.commit()
+        cursor = self.execute(query, list(kwargs.values()))
+        self.commit()
         return cursor.rowcount

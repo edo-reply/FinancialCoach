@@ -18,11 +18,13 @@ def version():
 
 
 if __name__ == '__main__':
-    root_dir = Path(__file__).parent.parent.resolve()
-    sys.path.append(str(root_dir))
+    app_path = Path(__file__).parent
+
+    sys.path.append(str(app_path.resolve()))
+    sys.path.append(str(app_path.parent.resolve()))
 
     Repository.init_db(db_path=':memory:',
-                       schema_path=Path(__file__).parent.joinpath("schema.sql").resolve())
+                       schema_path=app_path.joinpath("schema.sql").resolve())
 
     from controllers.user_controller import *
     from controllers.transaction_controller import *
