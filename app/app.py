@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 from flask import Flask, jsonify
 
@@ -19,9 +18,6 @@ def version():
 
 if __name__ == '__main__':
     app_path = Path(__file__).parent
-
-    sys.path.append(str(app_path.resolve()))
-    sys.path.append(str(app_path.parent.resolve()))
 
     Repository.init_db(db_path=':memory:',
                        schema_path=app_path.joinpath("schema.sql").resolve())
