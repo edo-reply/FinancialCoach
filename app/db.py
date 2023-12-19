@@ -58,3 +58,14 @@ class Repository:
         cursor = self.execute(query, list(kwargs.values()))
         self.commit()
         return cursor.rowcount
+
+    def update(self, obj, **kwargs: str) -> int:
+        if not isinstance(obj, self.model_type):
+            raise ValueError(f"obj is of wrong type '{type(obj)}'")
+        query = f"UPDATE {self.table_name} SET {",".join([f"{col} = ?" for col in self.fields if obj.__dict__[col]])} "\
+            f"WHERE {",".join([f"{col} = ?" for col in kwargs.keys()])}"
+        values = [str(obj.__dict__[k]) for k in self.fields if obj.__dict__[k]]
+        values += kwargs.values()
+        cursor = self.execute(query, values)
+        self.commit()
+        return cursor.rowcount

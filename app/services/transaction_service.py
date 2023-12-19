@@ -23,3 +23,13 @@ def create_transactions(transaction: UserTransaction) -> UserTransaction | None:
         print(err)
         return None
     return transaction
+
+def update_transactions(user_id: str, transaction_id: str, transaction: UserTransaction) -> UserTransaction | None:
+    try:
+        transaction.id = transaction_id
+        transaction.user_id = user_id
+        transaction_repo.update(transaction, id=transaction_id)
+    except IntegrityError as err:
+        print(err)
+        return None
+    return transaction

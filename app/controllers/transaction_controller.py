@@ -33,3 +33,22 @@ def create_transaction(user_id: str):
         return jsonify(transaction), 201
     else:
         return jsonify({"error": "User not found"}), 404
+
+@app.put("/api/users/<string:user_id>/transactions/<string:transaction_id>")
+def update_transaction(user_id: str, transaction_id: str):
+    body = request.get_json(silent=True)
+    if not body:
+        return jsonify({"error": "Unsupported media type"}), 415
+
+    try:
+        transaction = UserTransaction(**body, id=uuid4(), user_id=UUID(user_id))
+    except TypeError as err:
+        print(err)
+        return jsonify({"error": "Invalid request"}), 400
+
+    transaction = transaction_service.update_transactions(user_id, transaction_id, transaction)
+
+    if transaction is not None:
+        return jsonify(transaction), 201
+    else:
+        return jsonify({"error": "User not found"}), 404
