@@ -22,7 +22,7 @@ def create_user():
         return jsonify({"error": "Unsupported media type"}), 415
 
     try:
-        user = User(**body, id=uuid4())
+        user = User(**body, id=str(uuid4()))
     except TypeError as err:
         print(err)
         return jsonify({"error": "Invalid request"}), 400

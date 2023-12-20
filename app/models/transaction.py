@@ -1,26 +1,20 @@
 from dataclasses import dataclass
-from uuid import UUID
+from datetime import datetime
 
 
 @dataclass
-class UserTransaction:
-    id: UUID
-    user_id: UUID
-    details: str
+class Transaction:
+    id: str
+    user_id: str
+    description: str
     amount: float  # TODO change to appropriate currency type
     category: int
     recurring_event: bool
+    created_on: datetime = datetime.now()
     rating: int = -1
 
     def __post_init__(self):
-        if type(self.amount) is not float:
-            raise TypeError(f"type(amount)={type(self.amount)} but should be float")
-        if type(self.category) is not int:
-            raise TypeError(f"type(category)={type(self.category)} but should be int")
-        if type(self.recurring_event) is not bool:
-            self.recurring_event = self.recurring_event.lower() in ['true', 't', '1', 'y', 'yes']
-        if type(self.rating) is not int:
-            raise TypeError(f"type(rating)={type(self.rating)} but should be int")
+        pass
 
     def to_dict(self) -> dict:
         _dict = self.__dict__.copy()

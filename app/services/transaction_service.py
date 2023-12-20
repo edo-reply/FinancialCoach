@@ -1,34 +1,34 @@
 from sqlite3 import IntegrityError
 
-from models.transaction import UserTransaction
-from db import Repository
+from sqlalchemy import select
+
+from models.transaction import Transaction
+from database import db
 from smartagent import engine
 
-transaction_repo = Repository(UserTransaction)
 
-
-def get_transactions(user_id: str) -> list[UserTransaction] | None:
-    result = transaction_repo.select(user_id=user_id)
+def get_transactions(user_id: str) -> list[Transaction] | None:
+    result = db.session.scalars(select(Transaction).filter_by(user_id = user_id)).all()
     if result:
         return result
     else:
         return None
 
 
-def create_transactions(transaction: UserTransaction) -> UserTransaction | None:
+def create_transactions(transaction: Transaction) -> Transaction | None:
     try:
         transaction.rating = engine.rate_transaction(transaction)
-        transaction_repo.insert(transaction)
+        db.session.add(transaction)
+        db.session.commit()
     except IntegrityError as err:
         print(err)
         return None
     return transaction
 
-def update_transactions(user_id: str, transaction_id: str, transaction: UserTransaction) -> UserTransaction | None:
+def update_transactions(user_id: str, transaction_id: str, transaction: Transaction) -> Transaction | None:
     try:
-        transaction.id = transaction_id
-        transaction.user_id = user_id
-        transaction_repo.update(transaction, id=transaction_id)
+        db.session.query(Transaction).filter(Transaction.id == transaction_id and Transaction.user_id == user_id).update({'rating': transaction.rating})
+        db.session.commit()
     except IntegrityError as err:
         print(err)
         return None

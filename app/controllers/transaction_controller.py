@@ -3,7 +3,7 @@ from flask import jsonify, request
 
 from app import app
 from services import transaction_service
-from models.transaction import UserTransaction
+from models.transaction import Transaction
 
 
 @app.get("/api/users/<string:user_id>/transactions")
@@ -22,7 +22,7 @@ def create_transaction(user_id: str):
         return jsonify({"error": "Unsupported media type"}), 415
 
     try:
-        transaction = UserTransaction(**body, id=uuid4(), user_id=UUID(user_id))
+        transaction = Transaction(**body, id=str(uuid4()), user_id=user_id)
     except TypeError as err:
         print(err)
         return jsonify({"error": "Invalid request"}), 400
@@ -41,7 +41,7 @@ def update_transaction(user_id: str, transaction_id: str):
         return jsonify({"error": "Unsupported media type"}), 415
 
     try:
-        transaction = UserTransaction(**body, id=uuid4(), user_id=UUID(user_id))
+        transaction = Transaction(**body, id=transaction_id, user_id=user_id)
     except TypeError as err:
         print(err)
         return jsonify({"error": "Invalid request"}), 400

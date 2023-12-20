@@ -1,7 +1,5 @@
-from pathlib import Path
 from flask import Flask, jsonify
-
-from db import Repository
+from database import db
 
 app = Flask(__name__)
 
@@ -15,13 +13,14 @@ def internal_server_error(e):
 def version():
     return "1.0"
 
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+    print('[INFO] ')
 
 if __name__ == '__main__':
-    app_path = Path(__file__).parent
-
-    Repository.init_db(db_path=':memory:',
-                       schema_path=app_path.joinpath("schema.sql").resolve())
-
     from controllers.user_controller import *
     from controllers.transaction_controller import *
     from controllers.advice_controller import *

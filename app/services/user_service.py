@@ -1,21 +1,24 @@
+from sqlalchemy import delete, select
 from models.user import User
-from db import Repository
-
-user_repo = Repository(User)
+from database import db
 
 
 def get_user(user_id: str) -> User | None:
-    result = user_repo.select(id=user_id)
+    result = db.session.scalar(select(User).filter_by(id=user_id))
     if result:
-        return result[0]
+        return result
     else:
         return None
 
 
 def create_user(user: User) -> User:
-    user_repo.insert(user)
+    db.session.add(user)
+    db.session.commit()
     return user
 
 
 def delete_user(user_id: str) -> bool:
-    return 1 == user_repo.delete(id=user_id)
+    print(delete(User).filter_by(id=user_id))
+    result = db.session.execute(delete(User).filter_by(id=user_id))
+    db.session.commit()
+    return result.rowcount == 1
