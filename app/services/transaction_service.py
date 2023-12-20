@@ -2,7 +2,7 @@ from sqlite3 import IntegrityError
 
 from sqlalchemy import select
 
-from models.transaction import Transaction
+from models import Transaction
 from database import db
 from smartagent import engine
 

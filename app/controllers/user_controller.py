@@ -3,7 +3,7 @@ from flask import jsonify, request
 
 from app import app
 from services import user_service
-from models.user import User
+from models import User
 
 
 @app.get("/api/users/<string:user_id>")

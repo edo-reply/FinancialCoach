@@ -18,7 +18,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
 db.init_app(app)
 with app.app_context():
     db.create_all()
-    print('[INFO] ')
 
 if __name__ == '__main__':
     from controllers.user_controller import *

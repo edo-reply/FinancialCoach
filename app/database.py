@@ -1,10 +1,9 @@
 from uuid import uuid4
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Boolean, ForeignKey, Transaction, MetaData, Table, Column, Integer, String, TIMESTAMP
+from sqlalchemy import Boolean, ForeignKey, MetaData, Table, Column, Integer, String, TIMESTAMP
 from sqlalchemy.orm import registry
+from flask_sqlalchemy import SQLAlchemy
 
-from models.user import User
-from models.transaction import Transaction
+from models import User, Transaction
 
 sqlregistry = registry()
 

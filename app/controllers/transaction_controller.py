@@ -3,7 +3,7 @@ from flask import jsonify, request
 
 from app import app
 from services import transaction_service
-from models.transaction import Transaction
+from models import Transaction
 
 
 @app.get("/api/users/<string:user_id>/transactions")

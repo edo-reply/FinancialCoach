@@ -1,5 +1,5 @@
 from sqlalchemy import delete, select
-from models.user import User
+from models import User
 from database import db
 
 
