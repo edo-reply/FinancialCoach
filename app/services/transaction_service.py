@@ -1,13 +1,12 @@
-from sqlite3 import IntegrityError
-
+from typing import Sequence
 from sqlalchemy import select
 
-from models import Transaction
+from models import Transaction, get_fields
 from database import db
 from smartagent import engine
 
 
-def get_transactions(user_id: str) -> list[Transaction] | None:
+def get_transactions(user_id: str) -> Sequence[Transaction] | None:
     result = db.session.scalars(select(Transaction).filter_by(user_id = user_id)).all()
     if result:
         return result
@@ -20,16 +19,19 @@ def create_transactions(transaction: Transaction) -> Transaction | None:
         transaction.rating = engine.rate_transaction(transaction)
         db.session.add(transaction)
         db.session.commit()
-    except IntegrityError as err:
+    except Exception as err:
         print(err)
         return None
     return transaction
 
-def update_transactions(user_id: str, transaction_id: str, transaction: Transaction) -> Transaction | None:
+def update_transactions(transaction: Transaction) -> Transaction | None:
     try:
-        db.session.query(Transaction).filter(Transaction.id == transaction_id and Transaction.user_id == user_id).update({'rating': transaction.rating})
+        fields = get_fields(transaction)
+        db.session.query(Transaction) \
+            .filter_by(id=transaction.id, user_id=transaction.user_id) \
+            .update(fields)
         db.session.commit()
-    except IntegrityError as err:
+    except Exception as err:
         print(err)
         return None
     return transaction

@@ -1,10 +1,10 @@
-from flask import jsonify
+from flask import Blueprint, jsonify
 
-from app import app
 from services import advice_service
 
+bp = Blueprint('advices', __name__)
 
-@app.get("/api/users/<string:user_id>/advices")
+@bp.get("/api/users/<string:user_id>/advices")
 def get_advice(user_id: str):
     advices = advice_service.get_advices(user_id)
     if advices is not None:

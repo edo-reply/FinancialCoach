@@ -1,12 +1,12 @@
 from uuid import uuid4
-from flask import jsonify, request
+from flask import Blueprint, jsonify, request
 
-from app import app
 from services import user_service
 from models import User
 
+bp = Blueprint('users', __name__)
 
-@app.get("/api/users/<string:user_id>")
+@bp.get("/api/users/<string:user_id>")
 def get_user(user_id: str):
     user = user_service.get_user(user_id)
     if user is not None:
@@ -15,7 +15,7 @@ def get_user(user_id: str):
         return jsonify({"error": "User not found"}), 404
 
 
-@app.post("/api/users")
+@bp.post("/api/users")
 def create_user():
     body = request.get_json(silent=True)
     if not body:
@@ -31,7 +31,7 @@ def create_user():
     return jsonify(user), 201
 
 
-@app.delete("/api/users/<string:user_id>")
+@bp.delete("/api/users/<string:user_id>")
 def delete_user(user_id: str):
     if user_service.delete_user(user_id):
         return "", 204
