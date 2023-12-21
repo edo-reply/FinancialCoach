@@ -1,7 +1,7 @@
 from typing import Sequence
 from sqlalchemy import select
 
-from models import Transaction, get_fields
+from models import Transaction, update_model
 from database import db
 from smartagent import engine
 
@@ -16,6 +16,7 @@ def get_transactions(user_id: str) -> Sequence[Transaction] | None:
 
 def create_transactions(transaction: Transaction) -> Transaction | None:
     try:
+        transaction.created_on = None
         transaction.rating = engine.rate_transaction(transaction)
         db.session.add(transaction)
         db.session.commit()
@@ -26,12 +27,11 @@ def create_transactions(transaction: Transaction) -> Transaction | None:
 
 def update_transactions(transaction: Transaction) -> Transaction | None:
     try:
-        fields = get_fields(transaction)
-        db.session.query(Transaction) \
-            .filter_by(id=transaction.id, user_id=transaction.user_id) \
-            .update(fields)
+        transaction.created_on = None
+        to_update = db.session.get(Transaction, transaction.id)
+        update_model(to_update, transaction)
         db.session.commit()
     except Exception as err:
         print(err)
         return None
-    return transaction
+    return to_update

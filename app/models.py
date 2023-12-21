@@ -1,6 +1,5 @@
 from dataclasses import dataclass, is_dataclass, fields
 from datetime import datetime
-from typing import Any, Mapping
 
 
 @dataclass
@@ -22,11 +21,12 @@ class Transaction:
     created_on: datetime | None = None
     rating: int | None = None
 
-def get_fields(obj) -> Mapping[str, Any]:
-    if not is_dataclass(obj):
-        return {}
-    return {
-        field.name: getattr(obj, field.name)
-        for field in fields(obj)
-        if getattr(obj, field.name) is not None
-    }
+
+def update_model(dst, src):
+    if not is_dataclass(src) or not is_dataclass(dst):
+        raise NotImplementedError
+    
+    for field in fields(src):
+        value = getattr(src, field.name)
+        if value is not None:
+            setattr(dst, field.name, value)
