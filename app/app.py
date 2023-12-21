@@ -13,7 +13,7 @@ def internal_server_error(e):
 def version():
     return "1.0"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 
 db.init_app(app)
 with app.app_context():
