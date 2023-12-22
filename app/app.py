@@ -15,15 +15,15 @@ app.register_blueprint(insight_controller.bp)
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return jsonify({"error": "Internal Server Error"}), 500
+    return jsonify({'error': 'Internal Server Error'}), 500
 
 
-@app.route("/api/version")
+@app.route('/api/version')
 def version():
-    return "1.0"
+    return '1.0'
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
 
 db.init_app(app)
 with app.app_context():

@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import date
 
 from services import user_service, transaction_service
@@ -14,9 +15,6 @@ def get_insights(user_id: str) -> dict | None:
     if all_transactions is None:
         return None
 
-    # Base insight model
-    insights = {"messages": []}
-
     # Get transactions for this month
     today = date.today()
     transactions = [t for t in all_transactions 
@@ -26,25 +24,31 @@ def get_insights(user_id: str) -> dict | None:
 
     # Total budget for the month, defined from the user
     if user.budget is None or user.budget == 0:
-        insights['messages'].append('The current budget is not set, cannot get insights')
-        return insights
+        return {'messages': ['Cannot get insights because the current budget is not set. Please update your profile.']}
     total_budget = user.budget
 
     # Remove all NEED transactions cost, and check if we have enough
     total_budget -= sum(t.amount for t in transactions if RatingClass.Need.eq(t.rating) and t.amount is not None)
     if total_budget <= 0:
-        insights['messages'].append('Too many NEED transactions for the month, cannot calculate insights')
-        return insights # TODO add something else?
+        return {'messages': ['Cannot get insights. Too many "NEED" transactions in this month.']}
 
     # Calculate transactions to be cut through the smartagent engine
     not_need_transactions = [t for t in transactions if not RatingClass.Need.eq(t.rating)]
-    examples = cut_transactions(not_need_transactions, total_budget)
+    cut_examples = cut_transactions(not_need_transactions, total_budget)
 
-    if examples:
-        insights['examples'] = examples
-        
-        insights['message'].append('You should cut some costs')
-    else:
-        insights['message'].append('Good job! everything is under budget')
+    if cut_examples:
+        messages = ['You should cut some costs.']
 
-    return insights
+        # Check most common categories
+        counter = Counter(t.category for t in cut_examples)
+        common_categories = counter.most_common()
+        if common_categories[0][1] - common_categories[1][1] > 1:
+            category = common_categories[0][0] # TODO get textual category
+            messages.append(f'Try reducing your expenses in the "{category}" category.')
+
+        return {
+            'messages': messages,
+            'examples': cut_examples
+        }
+
+    return {'messages': ['Good job! everything is under budget.']}
