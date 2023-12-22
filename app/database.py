@@ -1,8 +1,6 @@
-from uuid import uuid4
-
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Boolean, ForeignKey, MetaData, Table, Column, Integer, String, DateTime, func
 from sqlalchemy.orm import registry
-from flask_sqlalchemy import SQLAlchemy
 
 from models import User, Transaction
 

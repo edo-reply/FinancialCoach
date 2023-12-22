@@ -1,8 +1,9 @@
 from uuid import uuid4
+
 from flask import Blueprint, jsonify, request
 
-from services import user_service
 from models import User
+from services import user_service
 
 bp = Blueprint('users', __name__)
 

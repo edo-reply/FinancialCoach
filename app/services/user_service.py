@@ -1,6 +1,7 @@
 from sqlalchemy import delete, select
-from models import User
+
 from database import db
+from models import User
 
 
 def get_user(user_id: str) -> User | None:

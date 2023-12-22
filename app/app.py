@@ -1,21 +1,16 @@
 from flask import Flask, jsonify
-from database import db
 
 from controllers import user_controller
 from controllers import transaction_controller
-from controllers import advice_controller
+from controllers import insight_controller
+from database import db
 
-
-print('Create Flask app')
 
 app = Flask(__name__)
 
-
-print('Register endpoints')
-
 app.register_blueprint(user_controller.bp)
 app.register_blueprint(transaction_controller.bp)
-app.register_blueprint(advice_controller.bp)
+app.register_blueprint(insight_controller.bp)
 
 
 @app.errorhandler(500)
@@ -27,8 +22,6 @@ def internal_server_error(e):
 def version():
     return "1.0"
 
-
-print('Init DB')
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 

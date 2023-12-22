@@ -1,9 +1,9 @@
 from typing import Sequence
 from sqlalchemy import select
 
-from models import Transaction, update_model
 from database import db
-from smartagent import engine
+from models import Transaction, update_model
+from smartagent.engine import rate_transaction
 
 
 def get_transactions(user_id: str) -> Sequence[Transaction] | None:
@@ -17,7 +17,7 @@ def get_transactions(user_id: str) -> Sequence[Transaction] | None:
 def create_transactions(transaction: Transaction) -> Transaction | None:
     try:
         transaction.created_on = None
-        transaction.rating = engine.rate_transaction(transaction)
+        transaction.rating = rate_transaction(transaction)
         db.session.add(transaction)
         db.session.commit()
     except Exception as err:

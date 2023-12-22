@@ -1,8 +1,9 @@
 from uuid import uuid4
+
 from flask import Blueprint, jsonify, request
 
-from services import transaction_service
 from models import Transaction
+from services import transaction_service
 
 
 bp = Blueprint('transactions', __name__)
