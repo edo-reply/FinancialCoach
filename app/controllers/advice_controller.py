@@ -10,4 +10,4 @@ def get_advice(user_id: str):
     if advices is not None:
         return jsonify(advices)
     else:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "Not found"}), 404
