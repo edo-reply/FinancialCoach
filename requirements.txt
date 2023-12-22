@@ -4,3 +4,4 @@ flask-sqlalchemy
 nltk
 numpy
 scipy
+scikit-learn
