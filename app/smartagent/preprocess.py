@@ -1,19 +1,28 @@
-import string
+from string import punctuation
 from typing import Generator
+
 import numpy as np
-from nltk import word_tokenize, corpus
+from nltk import corpus, download, word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 
 from models import Transaction
+from smartagent.data import dictionary
+
 
 lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
-stopwords = set(corpus.stopwords.words('english'))
-remove_punctuation = str.maketrans('', '', string.punctuation)
+remove_punctuation = str.maketrans('', '', punctuation)
+lang = 'english'
+try:
+    stopwords = set(corpus.stopwords.words(lang))
+except LookupError:
+    print('stopwords not found. Downloading now...')
+    download('stopwords')
+    stopwords = set(corpus.stopwords.words(lang))
 
 
-def load_features(transaction: Transaction, dictionary) -> np.ndarray:
+def load_features(transaction: Transaction) -> np.ndarray:
     if transaction.description is not None:
         description_tokens = tokenize_description(transaction.description)
     # result = description IDF + category IDF

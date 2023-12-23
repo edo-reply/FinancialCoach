@@ -1,22 +1,14 @@
-from pathlib import Path
-
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, milp
-from sklearn.svm import SVR
-import joblib
 
 from models import Transaction
-from preprocess import load_features
+from smartagent.preprocess import load_features
+from smartagent.data import model
 
-
-# Load dumped files
-data_dir = Path(__file__).parent.joinpath('data')
-model: SVR = joblib.load(data_dir.joinpath('model.pkl'))
-dictionary: np.ndarray = joblib.load(data_dir.joinpath('dictionary.pkl'))
 
 
 def rate_transaction(transaction: Transaction) -> float:
-    x = load_features(transaction, dictionary)
+    x = load_features(transaction)
     prediction = model.predict(x)
     return prediction[0]
 
