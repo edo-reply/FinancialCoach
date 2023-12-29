@@ -27,7 +27,7 @@ class Transaction:
         RatingClass.of(self.rating)
 
         if type(self.category) is str:
-            self.category = categories.index(self.category.lower())
+            self.category = TRANSACTION_CATEGORIES.index(self.category.lower())
 
 
 class RatingClass(Enum):
@@ -48,7 +48,7 @@ class RatingClass(Enum):
             return RatingClass(int(rating))
 
 
-categories = [
+TRANSACTION_CATEGORIES = [
     'transportation / extra transport',                 # o
     'rent & utilities',                                 # 1
     'medical',                                          # 2
