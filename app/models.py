@@ -26,6 +26,9 @@ class Transaction:
         # Throw exception if it is not a valid rating
         RatingClass.of(self.rating)
 
+        if type(self.category) is str:
+            self.category = categories.index(self.category.lower())
+
 
 class RatingClass(Enum):
     Need = 3
@@ -44,6 +47,32 @@ class RatingClass(Enum):
         else:
             return RatingClass(int(rating))
 
+
+categories = [
+    'transportation / extra transport',                 # o
+    'rent & utilities',                                 # 1
+    'medical',                                          # 2
+    'transportation / gas',                             # 3
+    'travel',                                           # 4
+    'transportation / parking',                         # 5
+    'transportation / automobile maintenance and fees', # 6
+    'loans',                                            # 7
+    'general services',                                 # 8
+    'government + non-profit / taxes',                  # 9
+    'income / other',                                   # 10
+    'income / wages, gig economy, tips',                # 11
+    'charity & donations',                              # 12
+    'general merchandise',                              # 13
+    'food & drink / restaurants',                       # 14
+    'food & drink / other',                             # 15
+    'food & drink / groceries',                         # 16
+    'entertainment / services',                         # 17
+    'food & drink / alcohol & bars',                    # 18
+    'bank transfers / savings',                         # 19
+    'bank transfers / transfers',                       # 20
+    'bank transfers / fees',                            # 21
+    'entertainment / activities'                        # 22
+]
 
 def update_model(dst, src):
     if not is_dataclass(src) or not is_dataclass(dst):
