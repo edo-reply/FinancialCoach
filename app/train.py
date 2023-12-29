@@ -6,13 +6,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
-from sklearn.metrics import classification_report, mean_squared_error, precision_score, accuracy_score
+from sklearn.metrics import mean_squared_error, precision_score
 
-from train.preprocess import tokenize
-
-def dump():
-    joblib.dump(vectorizer, data_dir.joinpath('vectorizer.pkl'))
-    joblib.dump(model, data_dir.joinpath('model.pkl'))
+from smartagent.preprocess import tokenize
 
 if __name__ == '__main__':
     data_dir = Path(__file__).parent.parent.joinpath('data')
@@ -24,7 +20,7 @@ if __name__ == '__main__':
     train_ds, test_ds = train_test_split(ds, test_size=.2)
 
 
-    transaction_descriptor = train_ds['transaction_description'] + ' ' + train_ds['new_transaction_category']
+    transaction_descriptor = train_ds['transaction_description'] + ' ' + train_ds['transaction_category']
     vectorizer.fit(transaction_descriptor)
 
     features = vectorizer.transform(transaction_descriptor)
@@ -36,10 +32,11 @@ if __name__ == '__main__':
 
     model.fit(X=features, y=train_ds['transaction_score'])
 
-    dump()
+    joblib.dump(vectorizer, data_dir.joinpath('vectorizer.pkl'))
+    joblib.dump(model, data_dir.joinpath('model.pkl'))
 
     # Valuta le prestazioni del modello
-    X_test = vectorizer.transform(test_ds['transaction_description'] + ' ' + test_ds['new_transaction_category'])
+    X_test = vectorizer.transform(test_ds['transaction_description'] + ' ' + test_ds['transaction_category'])
     y_test = test_ds['transaction_score'].to_numpy()
     predictions = model.predict(X_test)
 

@@ -16,6 +16,7 @@ except LookupError:
     nltk.download('stopwords')
     stopwords = set(nltk.corpus.stopwords.words(lang))
 
+
 def tokenize(document: str) -> Iterable[str]:
     tokens = []
     for token in nlp(document):

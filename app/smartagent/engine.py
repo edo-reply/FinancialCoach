@@ -1,18 +1,11 @@
 from pathlib import Path
 
 import numpy as np
-import joblib
 from scipy.optimize import Bounds, LinearConstraint, milp
 from sklearn.svm import SVR
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 from models import Transaction, TRANSACTION_CATEGORIES
-
-
-# Load dumped objects
-data_dir = Path(__file__).parent.joinpath('data')
-model: SVR = joblib.load(data_dir.joinpath('model.pkl'))
-vectorizer: TfidfVectorizer = joblib.load(data_dir.joinpath('vectorizer.pkl'))
+from smartagent.data import vectorizer, model
 
 
 def rate_transaction(transaction: Transaction) -> float:
